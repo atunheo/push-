@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 import urllib.parse
 
-st.title("🚀 GitLab Repo Creator")
+st.title("🚀 GitLab")
 
 # Lấy token từ secrets (bảo mật hơn hardcode)
 gitlab_token = st.secrets["GITLAB_TOKEN"]
