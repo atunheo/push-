@@ -4,7 +4,7 @@ import requests
 import time
 import re
 
-st.title("🚀 GitLab Repo Creator (Push → Rename, có delay, fix tiêu đề)")
+st.title("🚀 GitLab ")
 
 # Nhập thông tin GitLab
 gitlab_username = st.text_input("👤 GitLab Username", "")
