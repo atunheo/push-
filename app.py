@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import requests
 import urllib.parse
-import re
 
 st.title("🚀 GitLab ")
 
@@ -11,27 +10,18 @@ gitlab_token = st.text_input("🔑 GitLab Token", type="password")
 uploaded_file = st.file_uploader("📂 Upload Excel file", type=["xlsx"])
 
 def normalize_repo_name(value):
+    """Chuẩn hóa path repo từ Excel"""
     try:
         numeric = float(value)
         if numeric.is_integer():
             return str(int(numeric))
     except Exception:
         pass
-    text = str(value).strip()
-    if text.endswith(".0"):
-        return text[:-2]
-    return text
-
-def sanitize_name(name: str) -> str:
-    name = str(name).strip()
-    name = re.sub(r"[^A-Za-z0-9 .+\-_]", "-", name)
-    if not name or not re.match(r"^[A-Za-z0-9]", name):
-        name = "repo-" + name
-    return name
+    return str(value).strip()
 
 def create_repo(repo, title, content):
     """Tạo repo + thêm README.md"""
-    payload = {"name": sanitize_name(title), "path": repo, "visibility": "public"}
+    payload = {"name": title, "path": repo, "visibility": "public"}
     response = requests.post(
         "https://gitlab.com/api/v4/projects",
         headers={"PRIVATE-TOKEN": gitlab_token, "Content-Type": "application/json"},
@@ -59,8 +49,9 @@ def create_repo(repo, title, content):
     return project_id, file_resp.json() if file_resp.status_code not in (200,201) else None
 
 def rename_repo(project_id, new_name):
+    """Đổi tên repo sang tên cuối cùng"""
     url = f"https://gitlab.com/api/v4/projects/{project_id}"
-    payload = {"name": sanitize_name(new_name)}
+    payload = {"name": new_name}
     resp = requests.put(
         url,
         headers={"PRIVATE-TOKEN": gitlab_token, "Content-Type": "application/json"},
@@ -68,6 +59,7 @@ def rename_repo(project_id, new_name):
     )
     return resp.status_code, resp.json()
 
+# Nút bắt đầu
 if st.button("▶️ Bắt đầu chạy"):
     if not gitlab_username or not gitlab_token:
         st.error("❌ Vui lòng nhập Username và Token GitLab.")
