@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
 import requests
-import urllib.parse
 
 st.title("🚀 GitLab ")
 
-# Nhập username và token trực tiếp trên giao diện
+# Nhập thông tin GitLab
 gitlab_username = st.text_input("👤 GitLab Username", "")
 gitlab_token = st.text_input("🔑 GitLab Token", type="password")
 
@@ -24,16 +23,21 @@ def normalize_repo_name(value):
         return text[:-2]
     return text
 
-if uploaded_file is not None and gitlab_username and gitlab_token:
-    df = pd.read_excel(uploaded_file)
-
-    required_columns = ["Tên repo", "Tiêu đề", "Nội dung"]
-    if not all(col in df.columns for col in required_columns):
-        st.error(f"❌ File Excel phải có các cột: {required_columns}")
+# Nút bắt đầu
+if st.button("▶️ Bắt đầu chạy"):
+    if not gitlab_username or not gitlab_token:
+        st.error("❌ Vui lòng nhập Username và Token GitLab trước khi chạy.")
+    elif uploaded_file is None:
+        st.error("❌ Vui lòng upload file Excel trước khi chạy.")
     else:
-        st.write("📋 Preview dữ liệu:", df.head())
+        df = pd.read_excel(uploaded_file)
 
-        if st.button("🚀 Tạo Repo trên GitLab"):
+        required_columns = ["Tên repo", "Tiêu đề", "Nội dung"]
+        if not all(col in df.columns for col in required_columns):
+            st.error(f"❌ File Excel phải có các cột: {required_columns}")
+        else:
+            st.write("📋 Preview dữ liệu:", df.head())
+
             success, errors = 0, 0
             for _, row in df.iterrows():
                 repo = normalize_repo_name(row["Tên repo"])
