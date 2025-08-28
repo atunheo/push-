@@ -3,13 +3,11 @@ import pandas as pd
 import requests
 import urllib.parse
 
-st.title("🚀 GitLab")
+st.title("🚀 GitLab Repo Creator")
 
-# Lấy token từ secrets (bảo mật hơn hardcode)
-gitlab_token = st.secrets["GITLAB_TOKEN"]
-
-# Nhập username GitLab
-gitlab_username = st.text_input("🔑 GitLab Username", "")
+# Nhập username và token trực tiếp trên giao diện
+gitlab_username = st.text_input("👤 GitLab Username", "")
+gitlab_token = st.text_input("🔑 GitLab Token", type="password")
 
 # Upload file Excel
 uploaded_file = st.file_uploader("📂 Upload Excel file", type=["xlsx"])
@@ -26,7 +24,7 @@ def normalize_repo_name(value):
         return text[:-2]
     return text
 
-if uploaded_file is not None and gitlab_username:
+if uploaded_file is not None and gitlab_username and gitlab_token:
     df = pd.read_excel(uploaded_file)
 
     required_columns = ["Tên repo", "Tiêu đề", "Nội dung"]
