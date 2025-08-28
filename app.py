@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 import urllib.parse
 
-st.title("🚀 GitLab Repo Creator")
+st.title("🚀 GitLab ")
 
 # Nhập username và token trực tiếp trên giao diện
 gitlab_username = st.text_input("👤 GitLab Username", "")
