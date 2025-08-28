@@ -8,7 +8,7 @@ st.title("🚀 GitLab 🐷")
 
 # Nhập thông tin GitLab
 gitlab_username = st.text_input("🐷 GitLab Username", "")
-gitlab_token = st.text_input("🔑 GitLab Token", type="password")
+gitlab_token = st.text_input("🐽 GitLab Token", type="password")
 
 # Upload Excel
 uploaded_file = st.file_uploader("📂 Upload Excel file", type=["xlsx"])
