@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 import requests
 import time
+import re
 
-st.title("🚀 GitLab ")
+st.title("🚀 GitLab Repo Creator (Push → Rename, có delay, fix tiêu đề)")
 
 # Nhập thông tin GitLab
 gitlab_username = st.text_input("👤 GitLab Username", "")
@@ -25,7 +26,13 @@ def normalize_repo_name(value):
         pass
     return str(value).strip()
 
-def create_repo(repo, title):
+def clean_title(title: str) -> str:
+    """Bỏ dấu # ở đầu tiêu đề nếu có"""
+    title = str(title).strip()
+    title = re.sub(r"^#+\s*", "", title)  # bỏ hết # ở đầu
+    return title
+
+def create_repo(repo):
     """Tạo repo trống"""
     payload = {"name": repo, "path": repo, "visibility": "public"}
     resp = requests.post(
@@ -39,10 +46,11 @@ def create_repo(repo, title):
 
 def push_readme(project_id, title, content):
     """Push README.md vào repo qua API"""
+    clean = clean_title(title)
     file_url = f"https://gitlab.com/api/v4/projects/{project_id}/repository/files/README.md"
     file_payload = {
         "branch": "main",
-        "content": f"# {title}\n\n{content}",
+        "content": f"# {clean}\n\n{content}",
         "commit_message": "Add README.md"
     }
     resp = requests.post(
@@ -87,7 +95,7 @@ if st.button("▶️ Bắt đầu chạy"):
                 st.write(f"➡️ Đang xử lý repo: {repo} ...")
 
                 # Step 1: Create repo
-                project_id, err = create_repo(repo, title)
+                project_id, err = create_repo(repo)
                 if not project_id:
                     st.error(f"❌ Lỗi tạo repo {repo}: {err}")
                     errors += 1
