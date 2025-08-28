@@ -4,10 +4,10 @@ import requests
 import time
 import re
 
-st.title("🚀 GitLab ")
+st.title("🚀 GitLab 🐷")
 
 # Nhập thông tin GitLab
-gitlab_username = st.text_input("👤 GitLab Username", "")
+gitlab_username = st.text_input("🐷 GitLab Username", "")
 gitlab_token = st.text_input("🔑 GitLab Token", type="password")
 
 # Upload Excel
@@ -72,7 +72,7 @@ def rename_repo(project_id, new_name):
     return resp.status_code, resp.json()
 
 # Nút chạy
-if st.button("▶️ Bắt đầu chạy"):
+if st.button("🐖 Bắt đầu chạy"):
     if not gitlab_username or not gitlab_token:
         st.error("❌ Vui lòng nhập Username + Token GitLab.")
     elif uploaded_file is None:
