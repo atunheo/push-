@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import requests
+import time
 
-st.title("🚀 GitLab")
+st.title("🚀 GitLab ")
 
 # Nhập thông tin GitLab
 gitlab_username = st.text_input("👤 GitLab Username", "")
@@ -10,6 +11,9 @@ gitlab_token = st.text_input("🔑 GitLab Token", type="password")
 
 # Upload Excel
 uploaded_file = st.file_uploader("📂 Upload Excel file", type=["xlsx"])
+
+# Nhập số giây delay
+push_delay = st.number_input("⏳ Delay giữa các repo (giây)", min_value=0, max_value=60, value=3)
 
 def normalize_repo_name(value):
     """Chuẩn hóa path repo (dùng làm project path ban đầu)"""
@@ -74,7 +78,7 @@ if st.button("▶️ Bắt đầu chạy"):
             st.write("📋 Preview:", df.head())
             success, errors = 0, 0
 
-            for _, row in df.iterrows():
+            for idx, row in df.iterrows():
                 repo = normalize_repo_name(row["Tên repo"])
                 title = str(row["Tiêu đề"]).strip()
                 content = str(row["Nội dung"]).strip()
@@ -107,5 +111,10 @@ if st.button("▶️ Bắt đầu chạy"):
                 else:
                     st.error(f"❌ Lỗi đổi tên repo {repo}: {resp}")
                     errors += 1
+
+                # Delay giữa các repo
+                if idx < len(df) - 1 and push_delay > 0:
+                    st.info(f"⏳ Đợi {push_delay} giây trước repo tiếp theo...")
+                    time.sleep(push_delay)
 
             st.info(f"📊 Kết quả: {success} thành công, {errors} lỗi")
