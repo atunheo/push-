@@ -46,11 +46,10 @@ def create_repo(repo):
 
 def push_readme(project_id, title, content):
     """Push README.md vào repo qua API"""
-    clean = clean_title(title)
     file_url = f"https://gitlab.com/api/v4/projects/{project_id}/repository/files/README.md"
     file_payload = {
         "branch": "main",
-        "content": f"# {clean}\n\n{content}",
+        "content": content,  # Không thêm tiêu đề nữa
         "commit_message": "Add README.md"
     }
     resp = requests.post(
